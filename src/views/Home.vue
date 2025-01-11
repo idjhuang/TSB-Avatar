@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <div class="video_container" @click="PlayStandbyVideo">
-      <div class="video">
+    <div :style="{height: `${containerHeight}px`}" @click="PlayStandbyVideo">
+      <div :style="{ 'height': `${videoHeight}px`, 'background-color': 'black', 'overflow': 'hidden', 'position': 'absolute', 'top': `${videoOffsetY}px`, 'left': `${videoOffsetX}px` }">
         <video id="standbyVideo" width="100%">
           <source src="video/Standby.mp4" type="video/mp4"/>
         </video>
@@ -10,10 +10,8 @@
         </video>
       </div>
     </div>
-    <v-row justify="center" style="margin-top: 20px;">
-      <h1 v-html="title"></h1>
-      <!--v-select v-model="selectedVideo" :items="videoList" @change="PlayVideo"></v-select-->
-      <v-btn @click="TestVideo()">Play</v-btn>
+    <v-row justify="center" :style="{'margin-top': `${titleMarginTop}px`}">
+      <span v-html="title" :style="{'font-size': `${titleSize}px`, 'font-weight': '900'}"></span>
     </v-row>
     <component :is="componentName" :properties="componentProperties"></component>
   </v-container>
@@ -29,29 +27,13 @@
       ButtonPanel, TicketPanel, Keyboard
     },
     data: () => ({
-      // ----- for test -----
-      videoList: [
-        '歡迎光臨',
-        '台幣交易項目',
-        '交易金額是否超過三萬',
-        '至ATM操作',
-        '已為您取號',
-        '已為您取號-掃描QRCode',
-        '掃描預填單',
-        '網路銀行',
-        '輸入或刷卡',
-        '歡迎VIP',
-        '列印項目',
-        '列印台幣利率',
-        '列印外幣利率',
-        '列印外幣匯率',
-        '列印黃金牌告'
-      ],
-      videoIndex: 0,
-      // ----- for test -----
+      sizeRatio: 1,
       standbyVideo: null,
       video: null,
+      isVideoPlaying: false,
       buttonProc: null,
+      serviceName: '',
+      ticketNumber: '',
       /* Welcom */
       title: '請點選您今天要辦理的交易',
       componentName: 'ButtonPanel',
@@ -73,188 +55,55 @@
         ],
         footer: 'welcome'
       }
-
-      /* NTD-Trading *
-      title: '請點選您今天要辦理的<span class="red-font">臺幣交易項目</span>',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: 'Cash-Transaction', cols: 6, label: '現金交易(存款/提款/匯款)', img: 'image/cash.png', height: 400},
-            {name: 'Transfer-Transaction', cols: 6, label: '轉帳/跨行匯款', img: 'image/transfer.png', height: 400}
-          ],
-          [
-            {name: 'Exchange-for-Coins', cols: 3, label: '現金兌換零錢', img: 'image/exchange.png', height: 230},
-            {name: 'Passbook-Reissue', cols: 3, label: '換發存摺', img: 'image/passbook.png', height: 230},
-            {name: 'Deposit', cols: 3, label: '定存', img: 'image/deposit.png', height: 230},
-            {name: 'Other-NTD-Trading', cols: 3, label: '其他臺幣交易', img: 'image/bank.png', height: 230}
-          ]
-        ],
-        footer: 'home'
-      }
-      */
-      /* Cash-Transaction
-      title: '交易金額是否<span class="red-font">超過臺幣三萬元</span>?',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: 'Rules-Above', cols: 6, label: '是，三萬以上', img: 'image/up.png', height: 450},
-            {name: 'Rules-Below', cols: 6, label: '否，三萬以下', img: 'image/down.png', height: 450}
-          ]
-        ],
-        footer: 'home'
-      }
-
-      /* Rules-Below
-      title: '可以用ATM操作處理，不須抽號等待',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: '', cols: 6, label: '', img: 'image/atm.jpg', inline: true, height: 510},
-          ],
-          [
-            {name: 'Welcome', cols: 6, label: '<span class="white-font">了解</span>', img: 'image/check.png', color: 'crimson', inline: true}
-          ],
-          [
-            {name: 'Still-Take-Number- Cash', cols: 6, label: '仍要取號'}
-          ]
-        ],
-      }
-      */
-
-      /* Ticket /
-      title: '請抽取號碼牌',
-      componentName: 'TicketPanel',
-      componentProperties:
-      {
-        transaction: '台幣交易',
-        number: '1001',
-        qrcode: false
-      },
-      footer: 'home'
-      /**/
-      /* Application /
-      title: '請點選您今天要辦理的<span class="red-font">申請項目</span>',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: 'Transfer-Account', cols: 4, label: '約定轉帳帳號', img: 'image/account.png', height: 320},
-            {name: 'Lost-Reissue', cols: 4, label: '遺失補發金融卡/存摺', img: 'image/bank-card.png', height: 320},
-            {name: 'Internet-Banking', cols: 4, label: '網路銀行相關', img: 'image/net-banking.png', height: 320}
-          ],
-          [
-            {name: 'Passbook-Reissue', cols: 4, label: '換發存摺', img: 'image/passbook.png', height: 320},
-            {name: 'EasyCard-Refund', cols: 4, label: '悠遊卡退費', img: 'image/refund.png', height: 320},
-            {name: 'Other-Applications', cols: 4, label: '其他各項申請', img: 'image/bank.png', height: 230}
-          ]
-        ],
-        footer: 'home'
-      }
-      */
-      /* Internet-Banking /
-      title: '是否曾登入使用過網路銀行？',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: 'Have-Used-Internet', cols: 6, label: '是，我曾登入使用', img: 'image/yes.png', height: 450},
-            {name: 'Unused-Internet', cols: 6, label: '否，我沒登入過', img: 'image/no.png', height: 450}
-          ]
-        ],
-        footer: 'home'
-      }
-      */
-      /* Keyboard /
-      title: '預填客戶',
-      componentName: 'Keyboard',
-      componentProperties:
-      {
-        keyboardHint: '使用螢幕鍵盤輸入身分證號/存款帳號',
-        image: 'image/passbook-reader.jpg',
-        readerHint: '刷存摺或金融卡'
-      },
-      footer: 'home'
-      */
-
-      /* Wealth-Management-OK /
-      title: '請點選您今天要辦理的交易',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: 'TWD-Trading', cols: 4, label: '臺幣交易', img: 'image/ntd-trading.png', height: 320},
-            {name: 'Foreign-Trading', cols: 4, label: '外幣交易', img: 'image/foreign-trading.png', height: 320},
-            {name: 'Open-Account', cols: 4, label: '開戶服務', img: 'image/open-account.png', height: 320},
-          ],
-          [
-            {name: 'Payment', cols: 4, label: '繳費服務', img: 'image/payment.png', height: 320},
-            {name: 'Application', cols: 4, label: '各項申請', img: 'image/application.png', height: 320},
-            {name: 'Financial', cols: 4, label: '理財諮詢', img: 'image/financial.png', height: 320},
-          ]
-        ],
-        footer: 'home'
-      }
-      */
-      /* Printing-Area /
-      title: '請點選您需要列印的項目</span>',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: 'NTD-Rate', cols: 4, label: '臺幣利率', img: 'image/ntd-rate.png', height: 320},
-            {name: 'Foreign-Rate', cols: 4, label: '外幣利率', img: 'image/foreign-rate.png', height: 320}
-          ],
-          [
-            {name: 'Foreign-Exchange-Rate', cols: 4, label: '外幣匯率', img: 'image/exchange-rate.png', height: 320},
-            {name: 'Gold-Price', cols: 4, label: '黃金牌告', img: 'image/gold.png', height: 320}
-          ]
-        ],
-        footer: 'home'
-      }
-
-      /* NTD-Rate /
-      title: '已列印黃金牌告',
-      componentName: 'ButtonPanel',
-      componentProperties:
-      {
-        buttonList: [
-          [
-            {name: '', cols: 8, label: '', img: 'image/thermal-printer.jpg', inline: true},
-          ]
-        ],
-        footer: 'home'
-      }
-      */
     }),
+    computed: {
+      containerHeight() {
+        return Math.round(this.sizeRatio * 1110)
+      },
+      videoHeight() {
+        return Math.round(this.sizeRatio * 1490)
+      },
+      videoOffsetY() {
+        return Math.round(this.sizeRatio * -380)
+      },
+      videoOffsetX() {
+        return Math.round(this.sizeRatio * -1)
+      },
+      titleSize() {
+        return Math.round(this.sizeRatio * 32)
+      },
+      titleMarginTop() {
+        return Math.round(this.sizeRatio * 20)
+      }
+    },
     beforeDestroy() {
       Event.remove('state')
       Event.remove('button')
+      Event.remove('ticket')
+      Event.remove('input')
+      Event.remove('print')
     },
     created() {
       Event.listen('state', this.State)
       Event.listen('button', this.OnButton)
+      Event.listen('ticket', this.TakeTicket)
+      Event.listen('input', this.InputProcess)
+      Event.listen('print', this.PrintProcess)
       // add reference to root
       this.$root.home = this
     },
     mounted() {
+      this.sizeRatio = window.innerWidth / 1080.0
       this.standbyVideo = window.document.getElementById('standbyVideo')
       this.video = window.document.getElementById('video')
       this.video.onplaying = this.OnVideoPlaying
       this.video.onended = this.OnVideoEnded
+      this.State('Standby')
     },
     methods: {
       State(stateName) {
-        const state = window.stateDefinition[stateName]
+        console.log('stateName', stateName)
+        const state = window.GlobalConfig.stateDefinition[stateName]
         this.buttonProc = state.buttonProc
         this.title = state.title
         this.componentName = state.componentName
@@ -272,22 +121,75 @@
         this.standbyVideo.currentTime = 0
       },
       OnVideoEnded() {
+        this.isVideoPlaying = false
+        this.standbyVideo.loop = true
         this.standbyVideo.play()
         this.video.style.display = 'none'
         this.standbyVideo.style.display = 'block'
       },
       PlayVideo(video) {
+        if (this.isVideoPlaying) {
+          this.standbyVideo.play()
+          this.video.style.display = 'none'
+          this.standbyVideo.style.display = 'block'
+        }
         this.video.src = `video/${video}.mp4`
+        this.isVideoPlaying = true
         this.video.play()
       },
-      OnButton(buttonName) {
-        console.log(`Button: ${buttonName}`)
+      OnButton(data) {
+        console.log(`Button: ${data.buttonName}`)
+        this.buttonProc(data)
       },
-      TestVideo() {
-        this.video.src = `video/${this.videoList[this.videoIndex]}.mp4`
-        this.video.play()
-        this.videoIndex++
-        if (this.videoIndex > 14) this.videoIndex = 0
+      TakeTicket(serviceId) {
+        console.log('TakeTicket', serviceId)
+        // invoke 取號, 傳回值為取號單號碼, 存入 this.ticketNumber
+        switch (serviceId) {
+          case 'S001':
+            this.serviceName = '臺幣交易'
+            this.ticketNumber = '1001'
+            break
+          case 'S002':
+            this.serviceName = '各項申請'
+            this.ticketNumber = '1201'
+            break
+          case 'S003':
+            this.serviceName = '開戶服務'
+            this.ticketNumber = '1301'
+            break
+          case 'S004':
+            this.serviceName = '繳費服務'
+            this.ticketNumber = '1401'
+            break
+          case 'S005':
+            this.serviceName = '外幣交易'
+            this.ticketNumber = '1501'
+            break
+          case 'S006':
+            this.serviceName = '理財諮詢'
+            this.ticketNumber = '1601'
+            break
+          case 'S007':
+            this.serviceName = 'Richart服務'
+            this.ticketNumber = '1701'
+            break
+          case 'S008':
+            this.serviceName = '友善優先服務'
+            this.ticketNumber = '1801'
+            break
+        }
+      },
+      InputProcess(data) {
+        // invoke 輸入資料/刷卡
+        console.log(`Input: ${data.input}`)
+        // 若身分資料正確, 轉換到對應的state
+        this.State(data.state)
+      },
+      PrintProcess(data) {
+        // invoke 列印
+        console.log(`Print: ${data}`)
+        // 列印完成, 轉換到對應的state
+        this.State(data)
       },
       Print() {
         window.print()

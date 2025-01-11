@@ -447,7 +447,7 @@
       Done() {
         this.keyboard = false
         // window.chrome.webview.hostObjects.sync.interfaceObject.OnInput(this.input)
-        Event.fire('button', {buttonName: 'input', input: this.input})
+        Event.fire('button', {buttonName: 'Input', input: this.input})
       },
       OnClick(name) {
         // window.chrome.webview.hostObjects.sync.interfaceObject.OnClick(name)

@@ -21,6 +21,8 @@ window.Event = new class {
   }
 }
 
+window.SizeRatio = window.innerWidth / 1080.0
+
 //自定义拖动
 Vue.directive('drag',
     function (el, binding) {

@@ -7,7 +7,7 @@
             <v-row justify="center" align="center" class="fill-height">
               <div>
                 <v-row justify="center" align="center" style="height: 100px;">
-                  <span style="font-size: 48px; font-weight: bold">{{ properties.transaction }}</span>
+                  <span style="font-size: 48px; font-weight: bold">{{ ServiceName }}</span>
                 </v-row>
                 <v-row justify="center" align="center" style="height: 100px;">
                   <span style="font-size: 80px; font-weight: bold">{{ TicketNumber }}</span>
@@ -58,9 +58,11 @@
 
   export default {
     computed: {
+      ServiceName() {
+        return this.$root.home.serviceName
+      },
       TicketNumber() {
-        // invoke api to retrieve ticket number
-        return '1003';
+        return this.$root.home.ticketNumber
       }
     },
     data () {
