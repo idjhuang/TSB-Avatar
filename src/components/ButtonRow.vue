@@ -49,7 +49,6 @@
     },
     methods: {
       OnClick(name) {
-        // window.chrome.webview.hostObjects.sync.interfaceObject.OnClick(name)
         Event.fire('button', {buttonName: name})
       },
       BtnStyle(item) {

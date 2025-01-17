@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="padding-top: 0;">
     <ButtonRow v-for="item in properties.buttonList" :button-list="item"></ButtonRow>
     <v-row v-if="properties.footer === 'welcome'" dense justify="center">
       <v-col cols="3" class="d-flex flex-column">
@@ -49,7 +49,7 @@
     <v-row v-if="properties.footer === 'home'" dense justify="center">
       <v-col cols="2">
         <v-card @click="OnClick('Welcome')" block style="background-color: #f8f8f8;">
-          <v-card-text class="flex" style="color: black;">
+          <v-card-text class="flex" style="color: black; padding: 10px;">
             <v-row justify="center" align="center">
               <img src="image/home-32.png"/><h3>回首頁</h3>
             </v-row>
@@ -66,7 +66,7 @@
     computed: {
       WaitingNumber() {
         // invoke api to retrieve waiting number
-        return 2;
+        return window.chrome.webview.hostObjects.sync.interfaceObject.GetWaitingNumber();
       }
     },
     data () {

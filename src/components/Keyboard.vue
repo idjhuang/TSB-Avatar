@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="padding-top: 0;">
     <v-row v-if="!keyboard" dense justify="center">
       <v-col cols="8" class="d-flex flex-column">
         <v-card @click="OpenKeyPanel" block class="flex d-flex flex-column" style="background-color: #f8f8f8;">
@@ -410,7 +410,7 @@
     <v-row dense justify="center">
       <v-col cols="2">
         <v-card @click="OnClick('Welcome')" block style="background-color: #f8f8f8">
-          <v-card-text class="flex" style="color: black;">
+          <v-card-text class="flex" style="color: black; padding: 10px;">
             <v-row justify="center" align="center">
               <img src="image/home-32.png"/><h3>回首頁</h3>
             </v-row>

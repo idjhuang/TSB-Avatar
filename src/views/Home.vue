@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div :style="{height: `${containerHeight}px`}" @click="PlayStandbyVideo">
+    <div :style="{height: `${containerHeight}px`, 'background-color': 'black'}" @click="PlayStandbyVideo">
       <div :style="{ 'height': `${videoHeight}px`, 'background-color': 'black', 'overflow': 'hidden', 'position': 'absolute', 'top': `${videoOffsetY}px`, 'left': `${videoOffsetX}px` }">
         <video id="standbyVideo" width="100%">
           <source src="video/Standby.mp4" type="video/mp4"/>
@@ -58,22 +58,22 @@
     }),
     computed: {
       containerHeight() {
-        return Math.round(this.sizeRatio * 1110)
+        return Math.round(this.sizeRatio * 1085)
       },
       videoHeight() {
         return Math.round(this.sizeRatio * 1490)
       },
       videoOffsetY() {
-        return Math.round(this.sizeRatio * -380)
+        return Math.round(this.sizeRatio * -392)
       },
       videoOffsetX() {
-        return Math.round(this.sizeRatio * -1)
+        return Math.round(this.sizeRatio * 0)
       },
       titleSize() {
         return Math.round(this.sizeRatio * 32)
       },
       titleMarginTop() {
-        return Math.round(this.sizeRatio * 20)
+        return Math.round(this.sizeRatio * 10)
       }
     },
     beforeDestroy() {
@@ -143,51 +143,54 @@
       },
       TakeTicket(serviceId) {
         console.log('TakeTicket', serviceId)
+        this.ticketNumber = window.chrome.webview.hostObjects.sync.interfaceObject.TakeTicket(serviceId, false)
         // invoke 取號, 傳回值為取號單號碼, 存入 this.ticketNumber
         switch (serviceId) {
           case 'S001':
             this.serviceName = '臺幣交易'
-            this.ticketNumber = '1001'
+            // this.ticketNumber = '1001'
             break
           case 'S002':
             this.serviceName = '各項申請'
-            this.ticketNumber = '1201'
+            // this.ticketNumber = '1201'
             break
           case 'S003':
             this.serviceName = '開戶服務'
-            this.ticketNumber = '1301'
+            // this.ticketNumber = '1301'
             break
           case 'S004':
             this.serviceName = '繳費服務'
-            this.ticketNumber = '1401'
+            // this.ticketNumber = '1401'
             break
           case 'S005':
             this.serviceName = '外幣交易'
-            this.ticketNumber = '1501'
+            // this.ticketNumber = '1501'
             break
           case 'S006':
             this.serviceName = '理財諮詢'
-            this.ticketNumber = '1601'
+            // this.ticketNumber = '1601'
             break
           case 'S007':
             this.serviceName = 'Richart服務'
-            this.ticketNumber = '1701'
+            // this.ticketNumber = '1701'
             break
           case 'S008':
             this.serviceName = '友善優先服務'
-            this.ticketNumber = '1801'
+            // this.ticketNumber = '1801'
             break
         }
       },
       InputProcess(data) {
         // invoke 輸入資料/刷卡
         console.log(`Input: ${data.input}`)
+        window.chrome.webview.hostObjects.sync.interfaceObject.Input(data.input)
         // 若身分資料正確, 轉換到對應的state
         this.State(data.state)
       },
       PrintProcess(data) {
         // invoke 列印
         console.log(`Print: ${data}`)
+        window.chrome.webview.hostObjects.sync.interfaceObject.Print(data)
         // 列印完成, 轉換到對應的state
         this.State(data)
       },
